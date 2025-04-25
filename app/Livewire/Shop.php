@@ -23,6 +23,9 @@ class Shop extends Component
     public $cartItems = [];
     public $totalPrice = 0;
 
+    public $selectedProduct = null;
+    public $showModal = false;
+
     public function __construct()
     {
         $this->orderService = new OrderService();
@@ -33,39 +36,32 @@ class Shop extends Component
     {
         $categories = Category::all();
 
-        $products = Product::when($this->search, function ($query) {
-            $query->where('name', 'like', '%' . $this->search . '%');
-        })
-        ->when($this->selectedCategory, function ($query) {
-            $query->whereHas('category', function ($q) {
-                $q->where('id', $this->selectedCategory);
-            });
-        })
-        ->when($this->sortBy, function ($query) {
-            switch ($this->sortBy) {
-                case 'name_desc':
-                    $query->orderBy('name', 'desc');
-                    break;
-                case 'price_asc':
-                    $query->orderBy('price', 'asc');
-                    break;
-                case 'price_desc':
-                    $query->orderBy('price', 'desc');
-                    break;
-                default:
-                    $query->orderBy('name', 'asc');
-            }
-        })
-        ->paginate(5);
-
         return view('livewire.shop', [
-            'products' => $products,
-            'categories' => $categories,
+            'products' => $this->getFilteredProducts(),
+            'categories' => Category::all(),
         ])->layout('layouts.app');
     }
 
-    public $selectedProduct = null;
-    public $showModal = false;
+    protected function getFilteredProducts()
+    {
+        return Product::when($this->search, fn($q) =>
+                $q->where('name', 'like', "%{$this->search}%"))
+            ->when($this->selectedCategory, fn($q) =>
+                $q->whereHas('category', fn($cat) =>
+                    $cat->where('id', $this->selectedCategory)))
+            ->when($this->sortBy, fn($q) => $this->applySorting($q))
+            ->paginate(5);
+    }
+
+    protected function applySorting($query)
+    {
+        return match ($this->sortBy) {
+            'name_desc' => $query->orderBy('name', 'desc'),
+            'price_asc' => $query->orderBy('price', 'asc'),
+            'price_desc' => $query->orderBy('price', 'desc'),
+            default => $query->orderBy('name', 'asc'),
+        };
+    }
 
     public function viewProduct($productId)
     {
@@ -86,7 +82,7 @@ class Shop extends Component
         $this->loadCart();
     }
 
-    public function loadCart()
+    protected function loadCart()
     {
         $order = Auth::user()->orders()->where('status', 'pending')->first();
 
