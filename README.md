@@ -27,19 +27,19 @@ A modern eCommerce platform built using the **TALL stack**: **Tailwind CSS**, **
 ## Project Logic
 **Customer Interface**
 
-**Dashboard** with summary of order data and popular products
-**Shop** with products preview, filters, search and sorting. Also include **Detail View** and **Add to Cart**
-**My Orders** to show order summary and status
-**Manage My Orders** to redirect to filament admin panel to see user's orders and manage orders.
+- **Dashboard** with summary of order data and popular products
+= **Shop** with products preview, filters, search and sorting. Also include **Detail View** and **Add to Cart**
+- **My Orders** to show order summary and status
+- **Manage My Orders** to redirect to filament admin panel to see user's orders and manage orders.
 
 **Filament Admin Panel** (route - /superadmin ) 
 
-**Categories** to manage Categories. **Category is 2 steps tree structure.**
-**Products** to manage Products
-**Users** to manage Customers and Admins
+- **Categories** to manage Categories. **Category is 2 steps tree structure.**
+- **Products** to manage Products
+- **Users** to manage Customers and Admins
 > Note: Above pages can only access with **admin** role.
 
-**Orders** to manage Orders. Admin can see all orders and Customer can see their own orders.
+- **Orders** to manage Orders. Admin can see all orders and Customer can see their own orders.
 
 ## Requirements and ToDo
 - **Deleting rules and requirements** 
