@@ -76,9 +76,21 @@
             <div class="col-span-3 text-center text-gray-500">No products found.</div>
         @endforelse
     </div>
-    <div class="mt-6">
-    {{ $products->links() }}
+
+    <div class="flex items-center justify-between mt-6 mb-4">
+    <div>
+        <label for="perPage" class="text-sm font-medium text-gray-700">Items per page:</label>
+        <select wire:model.live="perPage" id="perPage" class="ml-2 border-gray-300 rounded-md shadow-sm text-sm">
+            <option value="6">6</option>
+            <option value="12">12</option>
+            <option value="18">18</option>
+        </select>
     </div>
+
+    <div>
+        {{ $products->links() }}
+    </div>
+</div>
 
     @if ($showModal && $selectedProduct)
     <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

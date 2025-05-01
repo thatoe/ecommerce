@@ -2,16 +2,19 @@
 
 namespace App\Livewire;
 
-use App\Services\CartService;
 use App\Models\Product;
 use Livewire\Component;
 use App\Models\Category;
 use App\Models\OrderItem;
-use Illuminate\Support\Facades\Auth;
+use Livewire\WithPagination;
+use App\Services\CartService;
 use App\Services\OrderService;
+use Illuminate\Support\Facades\Auth;
 
 class Shop extends Component
 {
+    use WithPagination;
+
     protected $orderService;
     protected $cartService;
 
@@ -26,16 +29,21 @@ class Shop extends Component
     public $selectedProduct = null;
     public $showModal = false;
 
+    public $perPage = 6;
+
     public function __construct()
     {
         $this->orderService = new OrderService();
         $this->cartService = new CartService();
     }
 
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
+
     public function render()
     {
-        $categories = Category::all();
-
         return view('livewire.shop', [
             'products' => $this->getFilteredProducts(),
             'categories' => Category::all(),
@@ -50,7 +58,7 @@ class Shop extends Component
                 $q->whereHas('category', fn($cat) =>
                     $cat->where('id', $this->selectedCategory)))
             ->when($this->sortBy, fn($q) => $this->applySorting($q))
-            ->paginate(5);
+            ->paginate($this->perPage);
     }
 
     protected function applySorting($query)
@@ -75,6 +83,11 @@ class Shop extends Component
         $this->orderService->addProductToOrder($order, $productId);
 
         $this->loadCart();
+
+        $this->dispatch('notify', [
+            'type' => 'success',
+            'message' => 'Item added successfully!',
+        ]);
     }
 
     public function mount()
