@@ -17,6 +17,8 @@ A modern eCommerce platform built using the **TALL stack**: **Tailwind CSS**, **
 
 - Clone the Repo
 - ``` composer install ```
+- ``` cp .env.example .env ``` (If .env doesn't exist yet)
+- ``` php artisan key:gen ```
 - ``` npm install && npm run dev ```
 - ``` php artisan migrate --seed```  (I added seeder for **categories** and **products**)
 - ``` php artisan storage:link ```
