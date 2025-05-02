@@ -39,20 +39,35 @@
                     </li>
                 @endforeach
             </ul>
-        <div class="mt-4 text-right">
-            @if ($order->status === 'completed')
-                <button wire:click="cancelOrder({{ $order->id }})"
-                        class="px-4 py-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded">
-                    Cancel Order
-                </button>
-            @elseif ($order->status === 'pending')
-                <button wire:click="$toggle('showCart')" class="px-4 py-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded">
-                    Edit Order
-                </button>
-            @endif
-        </div>
+            <div class="mt-4 text-right">
+                @if ($order->status === 'completed')
+                    <button wire:click="cancelOrder({{ $order->id }})"
+                            class="px-4 py-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded">
+                        Cancel Order
+                    </button>
+                @elseif ($order->status === 'pending')
+                    <button wire:click="$toggle('showCart')" class="px-4 py-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded">
+                        Edit Order
+                    </button>
+                @endif
+            </div>
         </div>
     @endforeach
+
+    <div class="flex items-center justify-between mt-6 mb-4">
+        <div>
+            <label for="perPage" class="text-sm font-medium text-gray-700">Items per page:</label>
+            <select wire:model.live="perPage" id="perPage" class="ml-2 border-gray-300 rounded-md shadow-sm text-sm">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+            </select>
+        </div>
+
+        <div>
+            {{ $orders->links() }}
+        </div>
+    </div>
 
     @if ($showCart)
     <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

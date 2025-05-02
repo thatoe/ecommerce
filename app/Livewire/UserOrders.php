@@ -4,13 +4,16 @@ namespace App\Livewire;
 
 use App\Models\Order;
 use Livewire\Component;
+use Livewire\WithPagination;
 use App\Services\CartService;
 use App\Services\OrderService;
 use Illuminate\Support\Facades\Auth;
 
 class UserOrders extends Component
 {
-    public $orders;
+    use WithPagination;
+
+    public $perPage = 5;
 
     public function __construct()
     {
@@ -20,9 +23,19 @@ class UserOrders extends Component
 
     public function render()
     {
-        $this->orders = Auth::user()->orders()->with('orderItems.product')->latest()->get();
+        $orders = Auth::user()
+            ->orders()
+            ->with('orderItems.product')
+            ->latest()
+            ->paginate($this->perPage);
 
-        return view('livewire.user-orders')->layout('layouts.app');
+        return view('livewire.user-orders', compact('orders'))
+            ->layout('layouts.app');
+    }
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
     }
 
     public function cancelOrder($orderId)
