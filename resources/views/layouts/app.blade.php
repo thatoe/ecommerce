@@ -36,18 +36,39 @@
         </div>
         @livewireScripts
         <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
         <script>
             Livewire.on('notify', (data) => {
                 const { type, message } = data[0];
 
-                const bg = type === 'success' ? 'green' : 'red';
+                const colors = {
+                    success: {
+                        bg: "#16a34a", // Tailwind green-600
+                    },
+                    error: {
+                        bg: "#dc2626", // Tailwind red-600
+                    },
+                    info: {
+                        bg: "#2563eb", // Tailwind blue-600
+                    }
+                };
 
                 Toastify({
                     text: message,
-                    duration: 4000,
-                    gravity: "top",
-                    position: "right",
-                    backgroundColor: bg,
+                    duration: 1000,
+                    close: true,
+                    gravity: "top", // 'top' or 'bottom'
+                    position: "right", // 'left', 'center' or 'right'
+                    stopOnFocus: true,
+                    style: {
+                        background: colors[type]?.bg || "#6b7280", // fallback to Tailwind gray-500
+                        color: "#fff",
+                        borderRadius: "6px",
+                        padding: "12px 16px",
+                        fontSize: "14px",
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                        zIndex: 9999,
+                    },
                 }).showToast();
             });
         </script>
